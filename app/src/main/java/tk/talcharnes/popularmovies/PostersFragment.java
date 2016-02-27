@@ -23,14 +23,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class PostersFragment extends Fragment {
-    private static List<MovieModel> movieModelList;
-    private static int movieModelListLength;
+    MovieModel[] movieModelList;
+    MovieModel[] movieDetails = new MovieModel[20];
+    private int movieModelListLength;
     GridView gridView;
     private String done = null;
     ImageAdapter adapter;
@@ -44,12 +44,12 @@ public class PostersFragment extends Fragment {
         FetchPostersTask fetchPostersTask = (FetchPostersTask) new FetchPostersTask().execute();
         // should find gridview on the view which you are creating
         gridView = (GridView) view.findViewById(R.id.gridview);
-        gridView.setAdapter(new ImageAdapter(getContext()));
-
+        adapter = new ImageAdapter(getContext(),new ArrayList<MovieModel>());
+        gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(getContext(), "You clicked image " + position + movieModelList.get(0).getTitle() ,
+                Toast.makeText(getContext(), "You clicked image " + position + movieModelList[position].getTitle() ,
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -75,8 +75,6 @@ public class FetchPostersTask extends AsyncTask<Void,Void,Void> {
         throws JSONException{
             JSONObject jsonParentObject = new JSONObject(posterJsonString);
             JSONArray movieJSonArray = jsonParentObject.getJSONArray("results");
-
-            movieModelList = new ArrayList<>();
             for(int i = 0; i < movieJSonArray.length(); i++){
                 JSONObject movieJsonObject = movieJSonArray.getJSONObject(i);
                 MovieModel movieModel = new MovieModel();
@@ -85,9 +83,8 @@ public class FetchPostersTask extends AsyncTask<Void,Void,Void> {
                 movieModel.setPoster_path(movieJsonObject.getString("poster_path"));
                 movieModel.setRelease_date(movieJsonObject.getString("release_date"));
                 movieModel.setVote_average(movieJsonObject.getString("vote_average"));
-                movieModelListLength++;
-
-                movieModelList.add(movieModel);
+//                Log.e(LOG_TAG,movieJsonObject.getString("title"));
+                movieDetails[i] = movieModel;
             }
             return null;
         }
@@ -161,19 +158,21 @@ public class FetchPostersTask extends AsyncTask<Void,Void,Void> {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             //ImageAdapter.setAsc(movieModelList.);
-            String[] asc = new String[movieModelList.size()];
-            for(int i = 0; i < asc.length; i++){
-                asc[i]=(getMovieModelList().get(i).getPoster_path());
-                ImageAdapter.setAsc(asc);
+//            String[] asc = new String[movieModelList.size()];
+            for(int i = 0; i < movieDetails.length; i++){
+//                Log.e("ascItem",asc[i]);
+                adapter.add(movieDetails[i]);
             }
+//            Log.e("sizeasc", String.valueOf(asc.length));
+
 
         }
     }
-    public static List<MovieModel> getMovieModelList(){
-        return movieModelList;
-    }
-    public static int getMovieModelListLength(){
-        return movieModelListLength;
-    }
+//    public List<MovieModel> getMovieModelList(){
+//        return movieModelList;
+//    }
+//    public int getMovieModelListLength(){
+//        return movieModelListLength;
+//    }
 
 }
