@@ -28,7 +28,6 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class PostersFragment extends Fragment {
-    MovieModel[] movieModelList;
     MovieModel[] movieDetails = new MovieModel[20];
     private int movieModelListLength;
     GridView gridView;
@@ -49,7 +48,7 @@ public class PostersFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(getContext(), "You clicked image " + position + movieModelList[position].getTitle() ,
+                Toast.makeText(getContext(), "You clicked image " + position+" " + movieDetails[position].getTitle() ,
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -168,11 +167,5 @@ public class FetchPostersTask extends AsyncTask<Void,Void,Void> {
 
         }
     }
-//    public List<MovieModel> getMovieModelList(){
-//        return movieModelList;
-//    }
-//    public int getMovieModelListLength(){
-//        return movieModelListLength;
-//    }
 
 }
